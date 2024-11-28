@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package schemaVersion="1.7.36" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Open-CMSIS-Pack/Open-CMSIS-Pack-Spec/v1.7.36/schema/PACK.xsd">
+  <vendor>Keil</vendor>
+  <name>STM32N6xx_DFP</name>
+  <description overview="Documents/OVERVIEW.md">STMicroelectronics STM32N6 Series Device Support</description>
+  <url>https://www.keil.com/pack/</url>
+  <repository type="git">https://github.com/Open-CMSIS-Pack/STM32N6xx_DFP.git</repository>
+  <license>LICENSE</license>
+  <licenseSets>
+    <licenseSet id="all" default="true" gating="true">
+      <license title="Apache-2.0 License for CMSIS add-ons" name="LICENSE" spdx="Apache-2.0"/>
+    </licenseSet>
+  </licenseSets>
+
+  <releases>
+    <release version="1.0.1-dev">
+      Active development...
+    </release>
+  </releases>
+
+  <keywords>                                                                  <!-- keywords for indexing -->
+    <keyword>ST</keyword>
+    <keyword>Device Support</keyword>
+    <keyword>Device Family Package STMicroelectronics</keyword>
+    <keyword>STM32N6</keyword>
+    <keyword>STM32N6xx</keyword>
+  </keywords>
+
+  <devices>
+    <family Dfamily="STM32N6 Series" Dvendor="STMicroelectronics:13">
+      <processor Dcore="Cortex-M55" DcoreVersion="r1p1" Dfpu="DP_FPU" Dmpu="MPU" Ddsp="DSP" Dmve="FP_MVE" Dtz="TZ" Dendian="Configurable" Dclock="800000000"/>
+      <description>
+        The Cortex-M55 processor is a fully synthesizeable mid-range processor that is designed for the microcontroller market.
+        The processor offers high compute performance across both scalar and vector operations with low power consumption, fast interrupt handling, and optional enhanced system debug with extensive breakpoint and trace capabilities.
+        Other significant benefits to developers include:
+        - Efficient processor core, system, and memories
+        - Instruction set extension for Digital Signal Processing (DSP) and Machine Learning applications
+        - Ultra-low power consumption with integrated sleep modes
+        - Platform robustness with optional integrated memory protection
+        - Extended security features with optional Security Extension
+        - Extended vector processing functionality with optional Armv8.1-M M-profile Vector Extension (MVE). Armv8.1-M MVE is also referred to as Arm Helium technology.
+        - Support for Custom Datapath Extension (CDE), which adds classes of Arm Custom Instructions (ACIs) in the coprocessor instruction space.
+      </description>
+      <book name="https://developer.arm.com/documentation/101273/latest" title="Cortex-M55 Generic User Guide"/>
+
+      <!-- ************************  Subfamily 'STM32N657'  ************************************ -->
+      <subFamily DsubFamily="STM32N657">
+        <debug __ap="1" svd="CMSIS/SVD/STM32N657.svd"/>
+        <compile define="STM32N657xx"/>
+
+        <memory name="SRAM"       access="rwx" start="0x341C0000" size="0x40000"    default="1" />
+        <memory name="DTCMRAM"    access="rwx" start="0x30000000" size="0x00040000" default="1" />
+        <memory name="SRAM3456"   access="rwx" start="0x34200000" size="0x1C0000"   default="1" />
+        <memory name="SRAMAHB12"  access="rwx" start="0x38000000" size="0x00008000" default="1" />
+        <memory name="SRAM_GFXMM" access="rwx" start="0x35000000" size="0x01000000" default="1" />
+
+        <!-- ################################### 0MB ############################################ -->
+        <!-- *************************  Device 'STM32N657X0HxQ'   ***************************** -->
+        <device Dname="STM32N657X0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" /> 
+          <feature type="BGA" n="264"/>
+        </device>
+        <!-- *************************  Device 'STM32N657L0HxQ'   ***************************** -->
+        <device Dname="STM32N657L0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="223"/>
+        </device>
+        <!-- *************************  Device 'STM32N657B0HxQ'   ***************************** -->
+        <device Dname="STM32N657B0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="198"/>
+        </device>
+        <!-- *************************  Device 'STM32N657I0HxQ'   ***************************** -->
+        <device Dname="STM32N657I0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="178"/>
+        </device>
+        <!-- *************************  Device 'STM32N657Z0HxQ'   ***************************** -->
+        <device Dname="STM32N657Z0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="142"/>
+        </device>
+        <!-- *************************  Device 'STM32N657A0HxQ'   ***************************** -->
+        <device Dname="STM32N657A0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="169"/>
+        </device>
+      </subFamily>
+
+      <!-- ************************  Subfamily 'STM32N647'  ************************************ -->
+      <subFamily DsubFamily="STM32N647">
+        <debug __ap="1" svd="CMSIS/SVD/STM32N647.svd"/>
+        <compile define="STM32N647xx"/>
+
+        <memory name="ITCMRAM"    access="rwx" start="0x00000000" size="0x00040000" default="1" />
+        <memory name="DTCMRAM"    access="rwx" start="0x20000000" size="0x00040000" default="1" />
+        <memory name="SRAM1234"   access="rwx" start="0x24000000" size="0x3E0000"   default="1" />
+        <memory name="SRAM_GFXMM" access="rwx" start="0x25000000" size="0x01000000" default="0" />
+        <memory name="SRAMAHB12"  access="rwx" start="0x28000000" size="0x00008000" default="1" />
+
+        <!-- ################################### 0MB ############################################ -->
+        <!-- *************************  Device 'STM32N647X0HxQ'   ***************************** -->
+        <device Dname="STM32N647X0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="264"/>
+        </device>
+        <!-- *************************  Device 'STM32N647L0HxQ'   ***************************** -->
+        <device Dname="STM32N647L0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="223"/>
+        </device>
+        <!-- *************************  Device 'STM32N647B0HxQ'   ***************************** -->
+        <device Dname="STM32N647B0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="198"/>
+        </device>
+        <!-- *************************  Device 'STM32N647I0HxQ'   ***************************** -->
+        <device Dname="STM32N647I0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="178"/>
+        </device>
+        <!-- *************************  Device 'STM32N647Z0HxQ'   ***************************** -->
+        <device Dname="STM32N647Z0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="142"/>
+        </device>
+        <!-- *************************  Device 'STM32N647A0HxQ'   ***************************** -->
+        <device Dname="STM32N647A0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="169"/>
+        </device>
+      </subFamily>
+
+      <!-- ************************  Subfamily 'STM32N645'  ************************************ -->
+      <subFamily DsubFamily="STM32N645">
+        <debug __ap="1" svd="CMSIS/SVD/STM32N645.svd"/>
+        <compile define="STM32N645xx"/>
+
+        <memory name="ITCMRAM"    access="rwx" start="0x00000000" size="0x00040000" default="1" />
+        <memory name="DTCMRAM"    access="rwx" start="0x20000000" size="0x00040000" default="1" />
+        <memory name="SRAM1234"   access="rwx" start="0x24000000" size="0x3E0000"   default="1" />
+        <memory name="SRAM_GFXMM" access="rwx" start="0x25000000" size="0x01000000" default="0" />
+        <memory name="SRAMAHB12"  access="rwx" start="0x28000000" size="0x00008000" default="1" />
+
+        <!-- ################################### 0MB ############################################ -->
+        <!-- *************************  Device 'STM32N645X0HxQ'   ***************************** -->
+        <device Dname="STM32N645X0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="264"/>
+        </device>
+        <!-- *************************  Device 'STM32N645L0HxQ'   ***************************** -->
+        <device Dname="STM32N645L0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="223"/>
+        </device>
+        <!-- *************************  Device 'STM32N645B0HxQ'   ***************************** -->
+        <device Dname="STM32N645B0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="198"/>
+        </device>
+        <!-- *************************  Device 'STM32N645I0HxQ'   ***************************** -->
+        <device Dname="STM32N645I0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="178"/>
+        </device>
+        <!-- *************************  Device 'STM32N645Z0HxQ'   ***************************** -->
+        <device Dname="STM32N645Z0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="142"/>
+        </device>
+        <!-- *************************  Device 'STM32N645A0HxQ'   ***************************** -->
+        <device Dname="STM32N645A0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="169"/>
+        </device>
+      </subFamily>
+
+      <!-- ************************  Subfamily 'STM32N655'  ************************************ -->
+      <subFamily DsubFamily="STM32N655">
+        <debug __ap="1" svd="CMSIS/SVD/STM32N655.svd"/>
+        <compile define="STM32N655xx"/>
+
+        <memory name="ITCMRAM"    access="rwx" start="0x00000000" size="0x00040000" default="1" />
+        <memory name="DTCMRAM"    access="rwx" start="0x20000000" size="0x00040000" default="1" />
+        <memory name="SRAM1234"   access="rwx" start="0x24000000" size="0x3E0000"   default="1" />
+        <memory name="SRAM_GFXMM" access="rwx" start="0x25000000" size="0x01000000" default="0" />
+        <memory name="SRAMAHB12"  access="rwx" start="0x28000000" size="0x00008000" default="1" />
+
+        <!-- ################################### 0MB ############################################ -->
+        <!-- *************************  Device 'STM32N655X0HxQ'   ***************************** -->
+        <device Dname="STM32N655X0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="264"/>
+        </device>
+        <!-- *************************  Device 'STM32N655L0HxQ'   ***************************** -->
+        <device Dname="STM32N655L0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="223"/>
+        </device>
+        <!-- *************************  Device 'STM32N655B0HxQ'   ***************************** -->
+        <device Dname="STM32N655B0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="198"/>
+        </device>
+        <!-- *************************  Device 'STM32N655I0HxQ'   ***************************** -->
+        <device Dname="STM32N655I0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="178"/>
+        </device>
+        <!-- *************************  Device 'STM32N655Z0HxQ'   ***************************** -->
+        <device Dname="STM32N655Z0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="142"/>
+        </device>
+        <!-- *************************  Device 'STM32N655A0HxQ'   ***************************** -->
+        <device Dname="STM32N655A0HxQ">
+          <memory name="Flash" access="rx" start="0x34180400" size="0x003FC00" default="1" startup="1" />
+          <feature type="BGA" n="169"/>
+        </device>
+      </subFamily>
+
+    </family>
+
+  </devices>
+
+  <conditions>
+    <!-- Device Conditions -->
+    <condition id="STM32N6">
+      <description>STMicroelectronics STM32N6 Series devices</description>
+      <require Dvendor="STMicroelectronics:13" Dname="STM32N6*"/>
+    </condition>
+
+    <!-- Device + CMSIS Conditions -->
+    <condition id="STM32N6 CMSIS">
+      <description>STMicroelectronics STM32N6 Device and CMSIS-CORE</description>
+      <require condition="STM32N6"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+    </condition>
+
+  </conditions>
+
+  <components>
+    <!-- CubeMX Generator -->
+    <component generator="CubeMX" Cclass="Device" Cgroup="CubeMX" Cversion="1.0.0" condition="STM32N6 CMSIS">
+      <description>Configuration via STM32CubeMX</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_CUBE_MX
+        #define CMSIS_device_header "stm32n6xx.h"
+      </RTE_Components_h>
+      <files>
+        <file category="doc" name="https://github.com/Open-CMSIS-Pack/cmsis-toolbox/blob/main/docs/CubeMX.md"/>
+      </files>
+    </component>
+  </components>
+
+  <csolution>
+    <!-- CubeMX Basic CMSIS Solution template -->
+    <template name="CubeMX Basic solution" path="Templates/CubeMX" file="CubeMX.csolution.yml" condition="STM32N6">
+      <description>Create a CubeMX basic solution with project</description>
+    </template>
+
+    <!-- CubeMX TrustZone CMSIS Solution template -->
+    <template name="CubeMX TrustZone solution" path="Templates/CubeMX_TZ" file="CubeMX_TZ.csolution.yml" condition="STM32N6">
+      <description>Create a CubeMX TrustZone solution with secure and non-secure projects</description>
+    </template>
+
+  </csolution>
+
+</package>
