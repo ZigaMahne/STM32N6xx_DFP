@@ -12,7 +12,6 @@ This DFP uses the generator integration of the [CMSIS-Toolbox to Configure STM32
 Directory                   | Description
 :---------------------------|:--------------
 [.github/workflows](https://github.com/Open-CMSIS-Pack/STM32N6xx_DFP/tree/main/.github/workflows)  | [GitHub Actions](#github-actions) for creating the software pack.
-[CMSIS/Flash](https://github.com/Open-CMSIS-Pack/STM32N6xx_DFP/tree/main/CMSIS/Flash)              | Contains flash algorithms.
 [CMSIS/SVD](https://github.com/Open-CMSIS-Pack/STM32N6xx_DFP/tree/main/CMSIS/SVD)                  | Contains SVD files for the devices.
 
 ## Usage
