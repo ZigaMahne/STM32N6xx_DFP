@@ -1,6 +1,6 @@
 # A solution is a collection of related projects that share same base configuration.
 solution:
-  created-for: CMSIS-Toolbox@2.7.0
+  created-for: CMSIS-Toolbox@2.12.0
   cdefault:
 
   # List of tested compilers that can be selected
@@ -18,12 +18,45 @@ solution:
   target-types:
     - type: STM32N6
       # device: STMicroelectronics::STM32N657X0HxQ
+      target-set:
+        - set: build_ExtMemLoader
+          images:
+            - project-context: ExtMemLoader.Debug
+        - set: build_load_FSBL
+          images:
+            - project-context: FSBL.Debug
+              load: none
+            # - image: $OutDir(FSBL)$/FSBL-trusted.bin
+            #   load-offset: 0x70000000
+            #   load: image
+          debugger:
+            name: ST-Link@pyOCD
+            port: 3333
+            protocol: swd
+            clock: 4000000
+        - set: debug_FSBL
+          images:
+            - image: $OutDir(FSBL)$/FSBL-trusted.bin
+              load: symbols
+          debugger:
+            name: ST-Link@pyOCD
+            port: 3333
+            protocol: swd
+            clock: 4000000
+      device: STM32N657X0HxQ
+      board: STM32N6570-DK:Rev.C
+      memory:
+        - name: Ext-Flash
+          access: rx
+          start: 0x70000000
+          size: 0x100000
+          algorithm: ExtMemLoader.axf
 
   # List of different build configurations.
   build-types:
     - type: Debug
       debug: on
-      optimize: none
+      optimize: debug
 
     - type: Release
       debug: off
@@ -31,5 +64,5 @@ solution:
 
   # List related projects.
   projects:
-    - project: Appli/Appli.cproject.yml
     - project: FSBL/FSBL.cproject.yml
+    - project: ExtMemLoader/ExtMemLoader.cproject.yml
