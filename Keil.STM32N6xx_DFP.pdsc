@@ -363,7 +363,14 @@ High-performance STM32N6 MCUs with Arm Cortex-M55 core, MVE, MPU, cache, DSP, DP
     <template name="CubeMX Basic solution" path="Templates/CubeMX" file="CubeMX.csolution.yml" condition="STM32N6">
       <description>Create a CubeMX basic solution with secure project</description>
     </template>
-
+    <!-- CubeMX FSBL_LRUN CMSIS Solution template -->
+    <template name="CubeMX FSBL_LRUN solution" path="Templates/CubeMX_FSBL_LRUN" file="CubeMX.csolution.yml" condition="STM32N6">
+      <description>Create a CubeMX FSBL_LRUN solution with secure project</description>
+    </template>
+    <!-- CubeMX FSBL_XIP CMSIS Solution template -->
+    <template name="CubeMX FSBL_XIP solution" path="Templates/CubeMX_FSBL_XIP" file="CubeMX.csolution.yml" condition="STM32N6">
+      <description>Create a CubeMX FSBL_XIP solution with secure project</description>
+    </template>
   </csolution>
 
 </package>
