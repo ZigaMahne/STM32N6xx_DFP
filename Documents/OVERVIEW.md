@@ -5,7 +5,6 @@ The **STMicroelectronics STM32N6 Series Device Family Pack (DFP)** is a [CMSIS-P
 - Enables compatible tools with device support.
 - Supports Arm Compiler 6 (AC6), GCC, and IAR.
 - Contains [System View Description (SVD)](https://open-cmsis-pack.github.io/svd-spec/main/index.html) descriptions of the peripherals.
-- Flash algorithms for the on-chip Flash memory.
 - Debug configuration information.
 
 ## CMSIS-Driver Support
