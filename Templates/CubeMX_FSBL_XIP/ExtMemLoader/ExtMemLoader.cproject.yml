@@ -13,10 +13,13 @@ project:
   # List of miscellaneous settings.
   setups:
     - setup: Template project setup
+      for-compiler: AC6
       misc:
         - C-CPP:
           - -fropi
           - -frwpi
+        - Link:
+          - --entry=main
 
   # List components to use for your application.
   # A software component is a re-usable unit that may be configurable.

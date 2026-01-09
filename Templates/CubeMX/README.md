@@ -2,210 +2,270 @@
 # Basic Template for STM32N6 series
 
 Project provides a reference basic template that can be used to build 512KB firmware application to execute in internal RAM (Application as part of the FSBL).
-Subproject ExtMemLoader is a used to generate a binary library capable of downloading an application to external memory.
+The ExtMemLoader subproject is a flash algorithm that generates a binary library capable of programming an application into external memory.
 
 ## Introduction
 
-The boot ROM code uses the 512KB area in the AXI SRAM2 to store the FSBL image, Once the clock is set, the green LED (GPIO PO.01) toggles in an infinite loop with a 0.5 second period.
+The bootROM copies FSBL image (512KB) from external Flash (Octo SPI Flash Memory) to the internal RAM (AXI SRAM2) and starts executing it.
+> For board STM32N6570-DK: In the application, once the clock is configured, the `LD1_green` LED (GPIO PO.01) blinks in an infinite loop with a 0.5 second period.
 
-## Steps to Configure, Build, Load, and Debug using the Basic Template csolution project
+## Steps to Configure, Build, Load and Debug using the Basic Template csolution project
 
-> **Note:** 
-> **Installed packs and extensions:**
-> - Keil.STM32N6xx_DFP.1.0.1-dev3
-> - Keil.STM32N6570-DK_BSP.1.0.0-dev
-> - Arm CMSIS Debugger 1.3.0
-> - Arm CMSIS Solution 1.62.2
-> - Cbridge27.exe
-> - STM32CubeMX.6.16.1
-> - STM32Cube_FW_U0_V1.3.0
-> - STM32_SigningTool_CLI_V2.20.0
-> - STM32CubeProgrammer_V2.18.0
-
+> **Note:**
+>
+>- **Required Packs:**
+>   - [Keil.STM32N6xx_DFP](https://github.com/Open-CMSIS-Pack/STM32N6xx_DFP)
+>   - Board specific pack
+>     > For board STM32N6570-DK: [Keil.STM32N6570-DK_BSP](https://github.com/Open-CMSIS-Pack/STM32N6570-DK_BSP)
+>- **Required CMSIS Tools and Extensions:**
+>   - Arm CMSIS Solution 1.64.1 (todo:check latest cbridge.exe)
+>   - Arm CMSIS Debugger 1.3.0
+>- **Required ST tools and Firmware Package:**
+>   - [STM32CubeMX 6.16.1](https://www.st.com/en/development-tools/stm32cubemx.html)
+>     - [STM32Cube_FW_N6 1.3.0](https://www.st.com/en/embedded-software/stm32cuben6.html)
+>   - [STM32CubeProgrammer 2.21.0](https://www.st.com/en/development-tools/stm32cubeprog.html)
+>     - STM32_SigningTool_CLI: Ensure the environment variable `STM32_PRG_PATH` points to the folder that contains `STM32_SigningTool_CLI.exe`
 
 ## In VSCode
 
-### In Activity bar under CMSIS click **Create Solution**
+### In Activity bar under CMSIS view click **Create Solution**
 
-- Select **STM32N6570-DK** Target Board (from BSP) and **CubeMX Basic solution** (from DFP) and click **Create**
+- Select Target (Device/Board) and **CubeMX Basic solution** (from DFP) and click **Create**
+  > For board STM32N6570-DK: Select STM32N6570-DK Target Board
 - Select **AC6** compiler and click **OK**
-- Launch STM32CubeMX (CMSIS → Components → Device:CubeMX) and click **Run Configuration Generator**
+- Launch STM32CubeMX (CMSIS view → expand Project Target → expand and locate Device:CubeMX component) and click **Run Configuration Generator**
 
 ## In STM32CubeMX
 
-### Select **Secure domain only** TrustZone feature
+Configure Target (Device/Board) in STM32CubeMX
 
-### Navigate to Project Manager:
-
-- Project tab: Ensure the **FSBL** and **ExtMemLoader** checkbox are selected
-- Core Generator tab: Check that **Copy only necessary library files** are selected
-
-### Navigate to Pinout & Configuration:
-
-#### System core:
-
-- CORTEX_M55M_FSBL: Enable CPU ICache and DCache
-- GPIO: Select PO1 pin as **GPIO_output**:
-  - Pin Context Assignement: **First State Booot Loader**
-  - GPIO output level: High
-  - Add user label: `LED1_green`
-
-#### Connectivity:
-
-- SDMMC2: Unselect **First Stage Boot Loader** (disable this peripheral, because have configuration issue)
-- XSPI1: Unselect **First Stage Boot Loader** (disable this peripheral, because have partly conflict with PO1 `LED1_green`)
-- XSPI2: Check that **First Stage Boot Loader** and **External Memory Loader** is selected under Runtime contexts and modify following parameter settings:
-  - Fifo Treshold: **4**
-  - Memory Type: **Macronix**
-  - Memory size: **1GBits**
-
-#### Middleware:
-
-- EXTMEM_MANAGER: Select **First Stage Boot Loader** under Runtime contexts and select **Activate External Memory Manager** checkbox
-  - Memory 1:
-    - Memory Instance: XSPI2
-    - Number of memory data lines: EXTMEM_LINK_CONFIG_8LINES
-
-- EXTMEM_LOADER: Select **Activate External Memory Loader** and configure following External Memory Loader parameters:
-  - Number of sectors: 0x8000 (32768)
-  - Sector size: 0x1000 Bytes (4096)
-
-### Navigate to Clock Configuration:
-
-- PLL1 select **/24** divider for "50" To IC3 (MHz)
-- XSPI2 Source Mux: IC3; **50** To XSPI2 (MHz)
-
-### Click **GENERATE CODE** and confirm warnings
+> STM32CubeMX configuration for [STM32N6570-DK board](https://github.com/ZigaMahne/STM32N6570-DK_BSP/blob/main/Documents/Basic_STM32CubeMX.md)
 
 ## In VSCode: FSBL and ExtMemLoader modifications
 
-### FSBL/FSBL.cproject.yml
+### FSBL/FSBL.cproject.yml for Target
 
 - #### Add linker script
-
 ```yaml
-# Linker script definition
-linker:
-  - script: ../STM32CubeMX/STM32N657X0HxQ/STM32CubeMX/MDK-ARM/FSBL/stm32n657xx_axisram2_fsbl.sct
-    for-compiler: AC6
+  # Linker script definition
+  linker:
+    - script: ../STM32CubeMX/Target/STM32CubeMX/MDK-ARM/FSBL/stm32n6xxxx_axisram2_fsbl.sct
+      for-compiler: AC6
 ```
+
+  > For board STM32N6570-DK:
+  > ```yaml
+  >   # Linker script definition
+  >   linker:
+  >     - script: ../STM32CubeMX/STM32N657X0HxQ/STM32CubeMX/MDK-ARM/FSBL/stm32n657xx_axisram2_fsbl.sct
+  >       for-compiler: AC6
+  > ```
+
 
 - #### Add post-build command to add header to the generated binary
 
 ```yaml
-# Post-build commands to add header
-executes:
-  - execute: Generate_trusted_bin
-    run: STM32_SigningTool_CLI.exe -bin $input$ -s -nk -of 0x80000000 -t fsbl -o $output$ -hv 2.3
-    input:
-      - $bin()$
-    output:
-      - $OutDir()$/FSBL-trusted.bin
+  # Post-build commands to add header
+  executes:
+    - execute: Generate_trusted_bin
+      run: $ENV{STM32_PRG_PATH}/STM32_SigningTool_CLI.exe -bin $input$ -s -nk -of 0x80000000 -align -t fsbl -o $output$ -hv 2.3
+      input:
+        - $bin()$
+      output:
+        - $OutDir()$/FSBL-trusted.bin
 ```
-> **Note:** Note: The OTP configuration for flash source selection is configurable via BOOTROM_CONFIG2 - OTP_WORD11 using **STM32CubeProgrammer**. For more information, please check [UM3234](https://www.st.com/resource/en/user_manual/um3234-how-to-proceed-with-boot-rom-on-stm32n6-mcus-stmicroelectronics.pdf)
+
+> **Note:** The OTP configuration for flash source selection is configurable via fuses in BOOTROM_CONFIG_2[8:5], OTP_WORD11 using **STM32CubeProgrammer**. Requires the **default** boot configuration to have sNOR device attached boot. For more information, please check [UM3234](https://www.st.com/resource/en/user_manual/um3234-how-to-proceed-with-boot-rom-on-stm32n6-mcus-stmicroelectronics.pdf)
+
 ---
 
-### STM32CubeMX/STM32N657X0HxQ/FSBL.cgen.yml
+### STM32CubeMX/Target/FSBL.cgen.yml for Target
 
-- #### Comment following redundant files (temporarily issue with cmsis toolbox extension)
+  > For board STM32N6570-DK:
+  > ### STM32CubeMX/STM32N657X0HxQ/FSBL.cgen.yml
+
+- #### Comment redundant files
 
 ```yaml
-# - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/core/memory_wrapper.c
-# - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/core/systick_management.c
-# - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/MDK-ARM/FlashDev.c
-# - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/MDK-ARM/FlashPrg.c
-# - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/STM32Cube/stm32_device_info.c
-# - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/STM32Cube/stm32_loader_api.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Manager/stm32_extmem.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Manager/sal/stm32_sal_xspi.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Manager/sal/stm32_sal_sd.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Manager/nor_sfdp/stm32_sfdp_data.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Manager/nor_sfdp/stm32_sfdp_driver.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Manager/psram/stm32_psram_driver.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Manager/sdcard/stm32_sdcard_driver.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Manager/user/stm32_user_driver.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/core/memory_wrapper.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/core/systick_management.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/MDK-ARM/FlashDev.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/MDK-ARM/FlashPrg.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/STM32Cube/stm32_device_info.c
+  # - file: ./STM32CubeMX/Middlewares/ST/STM32_ExtMem_Loader/STM32Cube/stm32_loader_api.c
 ```
 
 ---
 
-### STM32CubeMX/STM32N657X0HxQ/STM32CubeMX/FSBL/Src/main.c
+### STM32CubeMX/Target/STM32CubeMX/FSBL/Src/main.c for Target
 
-- #### Add following line to toggle green led
+- #### Add line to toggle green led
 
-```c
-/* USER CODE BEGIN 3 */
-HAL_GPIO_TogglePin(LED1_green_GPIO_Port, LED1_green_Pin);
-HAL_Delay(500);
-/* USER CODE END 3 */
-```
+  > For board STM32N6570-DK:
+  > ### STM32CubeMX/STM32N657X0HxQ/STM32CubeMX/FSBL/Src/main.c
+  > ```c
+  >     /* USER CODE BEGIN 3 */
+  >     HAL_GPIO_TogglePin(LD1_green_GPIO_Port, LD1_green_Pin);
+  >     HAL_Delay(500);
+  >    }
+  >     /* USER CODE END 3 */
+  > ```
 
 ---
 
-### ExtMemLoader/ExtMemLoader.cproject.yml
+### ExtMemLoader/ExtMemLoader.cproject.yml for Target
 
-- #### Modify TrustZone mode from **secure** to **off**
+- #### Modify TrustZone mode from secure to "off"
 
 - #### Add linker script
-
 ```yaml
-# Linker script definition
-linker:
-  - script: ../STM32CubeMX/STM32N657X0HxQ/STM32CubeMX/MDK-ARM/ExtMemLoader/stm32n6xx_extmemloader_mdkarm.sct
-    for-compiler: AC6
+  # Linker script definition
+  linker:
+    - script: ../STM32CubeMX/Target/STM32CubeMX/MDK-ARM/ExtMemLoader/stm32n6xx_extmemloader_mdkarm.sct
+      for-compiler: AC6
 ```
 
-- #### Add post build commands to move .axf to root
+  > For board STM32N6570-DK:
+  > ```yaml
+  >   # Linker script definition
+  >   linker:
+  >     - script: ../STM32CubeMX/STM32N657X0HxQ/STM32CubeMX/MDK-ARM/ExtMemLoader/stm32n6xx_extmemloader_mdkarm.sct
+  >       for-compiler: AC6
+  > ```
 
+- #### Add post build commands to move .axf to root for Target
 ```yaml
-# Post-build commands
-executes:
-  - execute: Copy_ExtMemLoader_to_root
-    run: ${CMAKE_COMMAND} -E copy $input$ $output$
-    input:
-      - ../out/ExtMemLoader/STM32N657X0HxQ/Debug/ExtMemLoader.axf
-    output:
-      - ../ExtMemLoader.axf
+  # Post-build commands
+  executes:
+    - execute: Copy_ExtMemLoader_to_root
+      run: ${CMAKE_COMMAND} -E copy $input$ $output$
+      input:
+        - ../out/ExtMemLoader/Target/Debug/ExtMemLoader.axf
+      output:
+        - ../ExtMemLoader.axf
 ```
+
+  > For board STM32N6570-DK:
+  > ```yaml
+  >   # Post-build commands
+  >   executes:
+  >     - execute: Copy_ExtMemLoader_to_root
+  >       run: ${CMAKE_COMMAND} -E copy $input$ $output$
+  >       input:
+  >         - ../out/ExtMemLoader/STM32N657X0HxQ/Debug/ExtMemLoader.axf
+  >       output:
+  >         - ../ExtMemLoader.axf
+  > ```
 
 ---
 
-### STM32CubeMX/STM32N657X0HxQ/ExtMemLoader.cgen.yml
+### STM32CubeMX/Target/ExtMemLoader.cgen.yml for Target
 
-- #### Comment following redundant file
+- #### Comment redundant file
 
-```yaml
-# - file: ./STM32CubeMX/MDK-ARM/startup_stm32n657xx_fsbl.c
-```
+  > For board STM32N6570-DK:
+  > ### STM32CubeMX/STM32N657X0HxQ/ExtMemLoader.cgen.yml
+  > ```yaml
+  >   # - file: ./STM32CubeMX/MDK-ARM/startup_stm32n657xx_fsbl.c
+  > ```
 
 ---
 
 ### In Activity bar under CMSIS click **Manage Solution Settings**
 
-- Select **build_ExtMemLoader** Target Set and click **Build solution**
+- Select **ExtMemLoader** Target Set and click **Build solution**
   - **ExtMemLoader** project should successfully build to have configured flash algorithm (check in root folder if ExtMemLoader.axf file appears)
 
-- Continue with select **build_load_FSBL** Target Set and click **Save** then click **Build solution**
-  - FSBL project should successfully build to out folder
-  - Open the CubeMX.csolution.yml file, **uncomment** the following entries, and **save** the file
+- Continue with select **FSBL** Target Set
+- Ensure **ST-Link@pyOCD** Debug Adapter is selected and **Update launch.json and tasks.json** checkbox is selected and click **Save** then click **Build solution**
+  - FSBL project should successfully build into out folder
+  - Set the boot mode configuration in **development mode** and reset board
+    > For board STM32N6570-DK: BOOT1 switch position to 1-3 to set development mode
+  - To flash Target click **Views and More Actions** and click **Load application to target**
+  - Set the boot mode configuration in **flash mode** and reset board
+    > For board STM32N6570-DK: BOOT1 switch position to 1-2 to set flash mode
+  - Configured pin should toggle (in FSBL/Src/main.c)
+    > For board STM32N6570-DK: `LD1_green` (GPIO PO.01) should blink
 
-```yaml
-# - image: $OutDir(FSBL)$/FSBL-trusted.bin
-#   load-offset: 0x70000000
-#   load: image
-``` 
-  - In STM32N6570-DK board: Set the boot mode in **development mode** (BOOT1 switch position is 1-3) and reset board
-  - To flash device click **Views and More Actions** and click **Load application to target**
-  - In STM32N6570-DK board: Set the boot mode in **flash mode** (BOOT1 switch position is 1-2) and reset board
-  - Green led should blink as we configured previous (in FSBL/Src/main.c)
-
-- To debug application, select **debug_FSBL** Target Set and click **Save**
+- To debug application in:
   - **FLASH MODE:**
-    - In STM32N6570-DK board: Set the boot mode in **flash mode** (BOOT1 switch position is 1-2) and reset board
+    - Set the boot mode configuration in **flash mode** and reset board
+      > For board STM32N6570-DK: BOOT1 switch position to 1-2 to set flash mode
+
+    > **Note:** To flash an unprogrammed (virgin) Target, ensure that the board is in development mode.
+
+    - Open .vscode\launch.json file and add following modification to the configuration named "STLink@pyOCD (launch)" under **initCommands** and **customResetCommands** commands:
+      - Modify the command name from **tbreak main** to **thbreak main**
     - Click **Load & Debug application** button and now program should wait in main function to start debug
     - With Continue (F5) button green led should blink in flash mode
 
   - **DEVELOPMENT MODE:**
-    - In STM32N6570-DK board: Set the boot mode in **development mode** (BOOT1 switch position is 1-3) and reset board
-    - Open .vscode\launch.json and add commands in initCommands after **monitor reset halt**:
+    - Set the boot mode configuration in **development mode** and reset board
+      > For board STM32N6570-DK: BOOT1 switch position to 1-3 to set development mode
+    - Open .vscode\launch.json file and add following modification to the configuration named "STLink@pyOCD (launch)"
+      - Comment line
 
       ```json
-      "load",
-      "set $pc = Reset_Handler",
-      "set $sp = (int) &Image$$ARM_LIB_STACK$$ZI$$Limit",
+      // "preLaunchTask": "CMSIS Load",
       ```
+
+      - add commands into initCommands
+
+      ```json
+      "initCommands": [
+          "monitor reset halt",
+          "load out/FSBL/Target/Debug/FSBL.hex",
+          "set $pc = Reset_Handler",
+          "set $sp = (int) &Image$$ARM_LIB_STACK$$ZI$$Limit",
+          "thbreak main"
+      ```
+
+         > For board STM32N6570-DK:
+         >   ```json
+         >   "initCommands": [
+         >       "monitor reset halt",
+         >       "load out/FSBL/STM32N657X0HxQ/Debug/FSBL.hex",
+         >       "set $pc = Reset_Handler",
+         >       "set $sp = (int) &Image$$ARM_LIB_STACK$$ZI$$Limit",
+         >       "thbreak main"
+         >   ```
+
+      - add commands into customResetCommands
+
+      ```json
+      "customResetCommands": [
+          "monitor reset halt",
+          "maintenance flush register-cache",
+          "maintenance flush dcache",
+          "load out/FSBL/Target/Debug/FSBL.hex",
+          "set $pc = Reset_Handler",
+          "set $sp = (int) &Image$$ARM_LIB_STACK$$ZI$$Limit",
+          "thbreak main",
+          "continue"
+      ```
+
+         > For board STM32N6570-DK:
+         >   ```json
+         >   "customResetCommands": [
+         >       "monitor reset halt",
+         >       "maintenance flush register-cache",
+         >       "maintenance flush dcache",
+         >       "load out/FSBL/STM32N657X0HxQ/Debug/FSBL.hex",
+         >       "set $pc = Reset_Handler",
+         >       "set $sp = (int) &Image$$ARM_LIB_STACK$$ZI$$Limit",
+         >       "thbreak main",
+         >       "continue"
+         >   ```
 
     - Save launch.json
     - Click **Load & Debug application** button and now program should wait in main function to start debug
-    - With Continue (F5) button green led should blink in development mode
+    - With Continue (F5) button configured pin should toggle in development mode
+      > For board STM32N6570-DK: `LD1_green` (GPIO PO.01) should blink
