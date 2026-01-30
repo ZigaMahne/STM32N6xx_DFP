@@ -1,8 +1,10 @@
 
 # FSBL_XIP Template for STM32N6 series
 
-Project provides a reference FSBL XIP template that can be used to build any firmware application to execute in external Flash (sub-project Appli).
-The ExtMemLoader subproject is a flash algorithm that generates a binary library capable of programming an application into external memory.
+The [first stage bootloader (FSBL)](https://community.st.com/t5/stm32-mcus/stm32n6-fsbl-explained/ta-p/764307) is a key component in the boot process of STM32N6 microcontrollers. It is responsible for initializing the system, configuring the hardware, and loading the application code from external memory into the internal or external memories for execution. 
+
+This FSBL XIP *csolution template project* can be used to build a firmware application (`Appli.cproject.yml`) that executes in place (XIP) directly from external Flash.
+The `ExtMemLoader.cproject.yml` implements a *flash algorithm* that generates a binary library capable of programming an application into external memory.
 
 ## Introduction
 
